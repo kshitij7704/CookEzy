@@ -1,5 +1,4 @@
 package com.example.recipe;
-
 import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
@@ -19,6 +18,7 @@ public class RecipeDetailsActivity extends AppCompatActivity {
     ListView listView;
     Button clearDatabaseButton;
     Button backButton;
+    ArrayAdapter<String> adapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,7 +43,7 @@ public class RecipeDetailsActivity extends AppCompatActivity {
         cursor.close();
 
         // Populate ListView with recipe names
-        ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, recipeNames);
+        adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, recipeNames);
         listView.setAdapter(adapter);
 
         // Set item click listener on ListView
@@ -61,6 +61,12 @@ public class RecipeDetailsActivity extends AppCompatActivity {
                     Toast.makeText(RecipeDetailsActivity.this, message, Toast.LENGTH_LONG).show();
                 }
                 cursor.close();
+
+                // Handle edit action
+                // Pass the recipe name to the EditRecipeActivity for editing
+                Intent intent = new Intent(RecipeDetailsActivity.this, EditRecipeActivity.class);
+                intent.putExtra("recipeName", recipeName);
+                startActivity(intent);
             }
         });
 
@@ -82,9 +88,6 @@ public class RecipeDetailsActivity extends AppCompatActivity {
                 onBackPressed();
             }
         });
-
-
-
     }
 
     private void clearDatabase() {
