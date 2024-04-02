@@ -2,6 +2,7 @@ package com.example.recipe;
 
 import android.content.ContentValues;
 import android.content.Intent;
+import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.view.View;
@@ -36,17 +37,24 @@ public class AddRecipeActivity extends AppCompatActivity {
                 String ingredients = ingredientsEditText.getText().toString();
                 String instructions = instructionsEditText.getText().toString();
 
-                ContentValues contentValues = new ContentValues();
-                contentValues.put("name", name);
-                contentValues.put("ingredients", ingredients);
-                contentValues.put("instructions", instructions);
-
-                long result = recipeDatabase.insert("recipes", null, contentValues);
-                if (result != -1) {
-                    Toast.makeText(AddRecipeActivity.this, "Recipe added", Toast.LENGTH_SHORT).show();
+                // Check if the recipe name already exists in the database
+                Cursor cursor = recipeDatabase.rawQuery("SELECT * FROM recipes WHERE name=?", new String[]{name});
+                if (cursor.getCount() > 0) {
+                    Toast.makeText(AddRecipeActivity.this, "Recipe with this name already exists", Toast.LENGTH_SHORT).show();
                 } else {
-                    Toast.makeText(AddRecipeActivity.this, "Error adding recipe", Toast.LENGTH_SHORT).show();
+                    ContentValues contentValues = new ContentValues();
+                    contentValues.put("name", name);
+                    contentValues.put("ingredients", ingredients);
+                    contentValues.put("instructions", instructions);
+
+                    long result = recipeDatabase.insert("recipes", null, contentValues);
+                    if (result != -1) {
+                        Toast.makeText(AddRecipeActivity.this, "Recipe added", Toast.LENGTH_SHORT).show();
+                    } else {
+                        Toast.makeText(AddRecipeActivity.this, "Error adding recipe", Toast.LENGTH_SHORT).show();
+                    }
                 }
+                cursor.close();
             }
         });
 
