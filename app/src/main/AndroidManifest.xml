@@ -17,13 +17,20 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Recipe"
         tools:targetApi="31">
-        <activity android:name=".AddRecipeActivity"
+
+        <!-- Splash Screen Activity -->
+        <activity
+            android:name=".SplashScreenActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <!-- Main Activity -->
+
+        <activity android:name=".AddRecipeActivity" />
         <activity android:name=".RecipeDetailsActivity" />
         <activity android:name=".EditRecipeActivity" />
 
