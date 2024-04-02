@@ -1,6 +1,6 @@
 package com.example.recipe;
 
-import android.content.ContentValues;
+import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
@@ -17,6 +17,7 @@ public class EditRecipeActivity extends AppCompatActivity {
     EditText ingredientsEditText;
     EditText instructionsEditText;
     Button updateButton;
+    Button deleteButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -29,6 +30,7 @@ public class EditRecipeActivity extends AppCompatActivity {
         ingredientsEditText = findViewById(R.id.editIngredientsEditText);
         instructionsEditText = findViewById(R.id.editInstructionsEditText);
         updateButton = findViewById(R.id.updateButton);
+        deleteButton = findViewById(R.id.deleteButton);
 
         // Retrieve the recipe name passed from RecipeDetailsActivity
         final String recipeName = getIntent().getStringExtra("recipeName");
@@ -52,22 +54,51 @@ public class EditRecipeActivity extends AppCompatActivity {
                 String updatedInstructions = instructionsEditText.getText().toString();
 
                 // Update recipe in the database
-                ContentValues contentValues = new ContentValues();
-                contentValues.put("name", updatedName);
-                contentValues.put("ingredients", updatedIngredients);
-                contentValues.put("instructions", updatedInstructions);
+                updateRecipe(recipeName, updatedName, updatedIngredients, updatedInstructions);
+            }
+        });
 
-                int rowsAffected = recipeDatabase.update("recipes", contentValues, "name=?", new String[]{recipeName});
-                if (rowsAffected > 0) {
-                    Toast.makeText(EditRecipeActivity.this, "Recipe updated", Toast.LENGTH_SHORT).show();
-                } else {
-                    Toast.makeText(EditRecipeActivity.this, "Error updating recipe", Toast.LENGTH_SHORT).show();
-                }
-
-                // Close the activity
-                finish();
+        // Delete button click listener
+        deleteButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // Delete the recipe from the database
+                deleteRecipe(recipeName);
             }
         });
     }
-}
 
+    // Method to update a recipe in the database
+    private void updateRecipe(String oldName, String newName, String newIngredients, String newInstructions) {
+        String sql = "UPDATE recipes SET name='" + newName + "', ingredients='" + newIngredients + "', instructions='" + newInstructions + "' WHERE name='" + oldName + "'";
+        try {
+            recipeDatabase.execSQL(sql);
+            Toast.makeText(EditRecipeActivity.this, "Recipe updated", Toast.LENGTH_SHORT).show();
+            // Set the result to indicate that the recipe was updated
+            Intent resultIntent = new Intent();
+            resultIntent.putExtra("recipeUpdated", true);
+            setResult(RESULT_OK, resultIntent);
+            finish(); // Finish the activity
+        } catch (Exception e) {
+            Toast.makeText(EditRecipeActivity.this, "Error updating recipe", Toast.LENGTH_SHORT).show();
+            e.printStackTrace();
+        }
+    }
+
+    // Method to delete a recipe from the database
+    private void deleteRecipe(String recipeName) {
+        String sql = "DELETE FROM recipes WHERE name='" + recipeName + "'";
+        try {
+            recipeDatabase.execSQL(sql);
+            Toast.makeText(EditRecipeActivity.this, "Recipe deleted", Toast.LENGTH_SHORT).show();
+            // Set the result to indicate that the recipe was deleted
+            Intent resultIntent = new Intent();
+            resultIntent.putExtra("recipeDeleted", true);
+            setResult(RESULT_OK, resultIntent);
+            finish(); // Finish the activity
+        } catch (Exception e) {
+            Toast.makeText(EditRecipeActivity.this, "Error deleting recipe", Toast.LENGTH_SHORT).show();
+            e.printStackTrace();
+        }
+    }
+}

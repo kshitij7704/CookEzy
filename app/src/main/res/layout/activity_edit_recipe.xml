@@ -40,4 +40,14 @@
         android:layout_marginTop="16dp"
         android:text="Update" />
 
+    <Button
+        android:id="@+id/deleteButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/editInstructionsEditText"
+        android:layout_marginTop="16dp"
+        android:text="Delete"
+        android:layout_toStartOf="@id/updateButton"
+        android:layout_marginEnd="16dp"/>
+
 </RelativeLayout>

@@ -1,4 +1,5 @@
 package com.example.recipe;
+
 import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
@@ -9,6 +10,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.Toast;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import java.util.ArrayList;
 
@@ -19,6 +21,9 @@ public class RecipeDetailsActivity extends AppCompatActivity {
     Button clearDatabaseButton;
     Button backButton;
     ArrayAdapter<String> adapter;
+    ArrayList<String> recipeNames;
+
+    private static final int EDIT_RECIPE_REQUEST_CODE = 1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -30,17 +35,10 @@ public class RecipeDetailsActivity extends AppCompatActivity {
         clearDatabaseButton = findViewById(R.id.clearDatabaseButton);
         backButton = findViewById(R.id.backButton);
 
-        ArrayList<String> recipeNames = new ArrayList<>();
+        recipeNames = new ArrayList<>();
 
         // Fetch all recipe names from the database
-        Cursor cursor = recipeDatabase.rawQuery("SELECT name FROM recipes", null);
-        if (cursor.moveToFirst()) {
-            do {
-                recipeNames.add(cursor.getString(cursor.getColumnIndex("name")));
-            } while (cursor.moveToNext());
-        }
-
-        cursor.close();
+        fetchRecipeNames();
 
         // Populate ListView with recipe names
         adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, recipeNames);
@@ -66,7 +64,7 @@ public class RecipeDetailsActivity extends AppCompatActivity {
                 // Pass the recipe name to the EditRecipeActivity for editing
                 Intent intent = new Intent(RecipeDetailsActivity.this, EditRecipeActivity.class);
                 intent.putExtra("recipeName", recipeName);
-                startActivity(intent);
+                startActivityForResult(intent, EDIT_RECIPE_REQUEST_CODE);
             }
         });
 
@@ -90,6 +88,18 @@ public class RecipeDetailsActivity extends AppCompatActivity {
         });
     }
 
+    // Fetch all recipe names from the database and populate recipeNames ArrayList
+    private void fetchRecipeNames() {
+        Cursor cursor = recipeDatabase.rawQuery("SELECT name FROM recipes", null);
+        if (cursor.moveToFirst()) {
+            do {
+                recipeNames.add(cursor.getString(cursor.getColumnIndex("name")));
+            } while (cursor.moveToNext());
+        }
+        cursor.close();
+    }
+
+    // Method to clear the database
     private void clearDatabase() {
         recipeDatabase.execSQL("DELETE FROM recipes");
         Toast.makeText(this, "Database cleared", Toast.LENGTH_SHORT).show();
@@ -100,5 +110,20 @@ public class RecipeDetailsActivity extends AppCompatActivity {
         // Override back button to go to the previous activity
         super.onBackPressed();
         finish();
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == EDIT_RECIPE_REQUEST_CODE && resultCode == RESULT_OK && data != null) {
+            boolean recipeUpdated = data.getBooleanExtra("recipeUpdated", false);
+            boolean recipeDeleted = data.getBooleanExtra("recipeDeleted", false);
+            if (recipeUpdated || recipeDeleted) {
+                // Recipe was either updated or deleted, so refresh the list
+                recipeNames.clear();
+                fetchRecipeNames();
+                adapter.notifyDataSetChanged();
+            }
+        }
     }
 }
