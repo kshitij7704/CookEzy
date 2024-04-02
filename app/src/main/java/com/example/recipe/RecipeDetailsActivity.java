@@ -1,5 +1,6 @@
 package com.example.recipe;
 
+import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
@@ -81,6 +82,9 @@ public class RecipeDetailsActivity extends AppCompatActivity {
                 onBackPressed();
             }
         });
+
+
+
     }
 
     private void clearDatabase() {
@@ -88,5 +92,10 @@ public class RecipeDetailsActivity extends AppCompatActivity {
         Toast.makeText(this, "Database cleared", Toast.LENGTH_SHORT).show();
     }
 
-
+    @Override
+    public void onBackPressed() {
+        // Override back button to go to the previous activity
+        super.onBackPressed();
+        finish();
+    }
 }
