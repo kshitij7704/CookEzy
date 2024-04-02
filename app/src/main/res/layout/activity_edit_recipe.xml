@@ -50,4 +50,14 @@
         android:layout_toStartOf="@id/updateButton"
         android:layout_marginEnd="16dp"/>
 
+    <!-- Add Send SMS Button -->
+    <Button
+        android:id="@+id/sendSmsButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/deleteButton"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="16dp"
+        android:text="Send SMS" />
+
 </RelativeLayout>
