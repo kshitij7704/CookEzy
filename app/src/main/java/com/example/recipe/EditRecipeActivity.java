@@ -20,6 +20,8 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
+import androidx.core.app.NotificationCompat;
+import androidx.core.app.NotificationManagerCompat;
 
 public class EditRecipeActivity extends AppCompatActivity {
 
@@ -32,6 +34,8 @@ public class EditRecipeActivity extends AppCompatActivity {
     Button updateButton;
     Button deleteButton;
     Button sendSmsButton;
+
+    private static final String CHANNEL_ID = "recipe_notification_channel";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -106,7 +110,7 @@ public class EditRecipeActivity extends AppCompatActivity {
         String sql = "UPDATE recipes SET name='" + newName + "', ingredients='" + newIngredients + "', instructions='" + newInstructions + "' WHERE name='" + oldName + "'";
         try {
             recipeDatabase.execSQL(sql);
-            Toast.makeText(EditRecipeActivity.this, "Recipe updated", Toast.LENGTH_SHORT).show();
+            displayNotification("Recipe Updated", "Recipe has been updated successfully.");
             Intent resultIntent = new Intent();
             resultIntent.putExtra("recipeUpdated", true);
             setResult(RESULT_OK, resultIntent);
@@ -121,7 +125,7 @@ public class EditRecipeActivity extends AppCompatActivity {
         String sql = "DELETE FROM recipes WHERE name='" + recipeName + "'";
         try {
             recipeDatabase.execSQL(sql);
-            Toast.makeText(EditRecipeActivity.this, "Recipe deleted", Toast.LENGTH_SHORT).show();
+            displayNotification("Recipe Deleted", "Recipe has been deleted successfully.");
             Intent resultIntent = new Intent();
             resultIntent.putExtra("recipeDeleted", true);
             setResult(RESULT_OK, resultIntent);
@@ -196,5 +200,21 @@ public class EditRecipeActivity extends AppCompatActivity {
                 Toast.makeText(this, "Permission denied. Cannot send SMS.", Toast.LENGTH_SHORT).show();
             }
         }
+    }
+
+    private void displayNotification(String title, String message) {
+        NotificationCompat.Builder builder = new NotificationCompat.Builder(this, CHANNEL_ID)
+                .setSmallIcon(R.drawable.start)
+                .setContentTitle(title)
+                .setContentText(message)
+                .setPriority(NotificationCompat.PRIORITY_DEFAULT);
+
+        NotificationManagerCompat notificationManager = NotificationManagerCompat.from(this);
+
+        // Notification ID allows you to update or cancel the notification later on
+        int notificationId = 1; // Change this to a unique ID for each notification
+
+        // Display the notification
+        notificationManager.notify(notificationId, builder.build());
     }
 }
