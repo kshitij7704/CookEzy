@@ -34,8 +34,14 @@ public class EditRecipeActivity extends AppCompatActivity {
     Button updateButton;
     Button deleteButton;
     Button sendSmsButton;
+    Button resetButton;
 
     private static final String CHANNEL_ID = "recipe_notification_channel";
+
+    // Variables to store initial values of the recipe fields
+    private String initialRecipeName;
+    private String initialIngredients;
+    private String initialInstructions;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,23 +56,38 @@ public class EditRecipeActivity extends AppCompatActivity {
         updateButton = findViewById(R.id.updateButton);
         deleteButton = findViewById(R.id.deleteButton);
         sendSmsButton = findViewById(R.id.sendSmsButton);
+        resetButton = findViewById(R.id.resetButton);
 
         final String recipeName = getIntent().getStringExtra("recipeName");
 
         Cursor cursor = recipeDatabase.rawQuery("SELECT * FROM recipes WHERE name=?", new String[]{recipeName});
         if (cursor.moveToFirst()) {
-            recipeNameEditText.setText(cursor.getString(cursor.getColumnIndex("name")));
-            ingredientsEditText.setText(cursor.getString(cursor.getColumnIndex("ingredients")));
-            instructionsEditText.setText(cursor.getString(cursor.getColumnIndex("instructions")));
+            initialRecipeName = cursor.getString(cursor.getColumnIndex("name"));
+            initialIngredients = cursor.getString(cursor.getColumnIndex("ingredients"));
+            initialInstructions = cursor.getString(cursor.getColumnIndex("instructions"));
+            recipeNameEditText.setText(initialRecipeName);
+            ingredientsEditText.setText(initialIngredients);
+            instructionsEditText.setText(initialInstructions);
         }
         cursor.close();
 
         updateButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String updatedName = recipeNameEditText.getText().toString();
-                String updatedIngredients = ingredientsEditText.getText().toString();
-                String updatedInstructions = instructionsEditText.getText().toString();
+                String updatedName = recipeNameEditText.getText().toString().trim();
+                String updatedIngredients = ingredientsEditText.getText().toString().trim();
+                String updatedInstructions = instructionsEditText.getText().toString().trim();
+
+                // Validation for updated fields
+                if (updatedName.isEmpty() || updatedIngredients.isEmpty() || updatedInstructions.isEmpty()) {
+                    Toast.makeText(EditRecipeActivity.this, "Recipe name, ingredients, and instructions cannot be empty", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+
+                if (updatedName.matches("^\\s*$") || updatedIngredients.matches("^\\s*$") || updatedInstructions.matches("^\\s*$")) {
+                    Toast.makeText(EditRecipeActivity.this, "Recipe name, ingredients, and instructions cannot consist only of spaces", Toast.LENGTH_SHORT).show();
+                    return;
+                }
 
                 updateRecipe(recipeName, updatedName, updatedIngredients, updatedInstructions);
             }
@@ -83,6 +104,13 @@ public class EditRecipeActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 sendSms();
+            }
+        });
+
+        resetButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                resetFields();
             }
         });
     }
@@ -218,5 +246,13 @@ public class EditRecipeActivity extends AppCompatActivity {
 
         // Display the notification
         notificationManager.notify(notificationId, builder.build());
+    }
+
+    // Method to reset the fields to their initial values
+    private void resetFields() {
+        recipeNameEditText.setText(initialRecipeName);
+        ingredientsEditText.setText(initialIngredients);
+        instructionsEditText.setText(initialInstructions);
+        Toast.makeText(EditRecipeActivity.this, "Fields reset to initial values", Toast.LENGTH_SHORT).show();
     }
 }

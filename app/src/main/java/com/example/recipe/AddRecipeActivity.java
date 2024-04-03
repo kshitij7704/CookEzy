@@ -39,16 +39,49 @@ public class AddRecipeActivity extends AppCompatActivity {
         saveButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String name = recipeNameEditText.getText().toString();
-                String ingredients = ingredientsEditText.getText().toString();
-                String instructions = instructionsEditText.getText().toString();
+                String name = recipeNameEditText.getText().toString().trim();
+                String ingredients = ingredientsEditText.getText().toString().trim();
+                String instructions = instructionsEditText.getText().toString().trim();
+
+                // Validate recipe name
+                if (name.isEmpty()) {
+                    Toast.makeText(AddRecipeActivity.this, "Recipe name cannot be empty", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+
+                if (name.matches("^\\s*$")) {
+                    Toast.makeText(AddRecipeActivity.this, "Recipe name cannot consist only of spaces", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+
+                // Validate ingredients
+                if (ingredients.isEmpty()) {
+                    Toast.makeText(AddRecipeActivity.this, "Ingredients cannot be empty", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+
+                if (ingredients.matches("^\\s*$")) {
+                    Toast.makeText(AddRecipeActivity.this, "Ingredients cannot consist only of spaces", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+
+                // Validate instructions
+                if (instructions.isEmpty()) {
+                    Toast.makeText(AddRecipeActivity.this, "Instructions cannot be empty", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+
+                if (instructions.matches("^\\s*$")) {
+                    Toast.makeText(AddRecipeActivity.this, "Instructions cannot consist only of spaces", Toast.LENGTH_SHORT).show();
+                    return;
+                }
 
                 // Check if the recipe name already exists in the database
                 Cursor cursor = recipeDatabase.rawQuery("SELECT * FROM recipes WHERE name=?", new String[]{name});
                 if (cursor.getCount() > 0) {
                     cursor.close();
                     displayNotification("Recipe already exists", "A recipe with this name already exists");
-                    Toast.makeText(AddRecipeActivity.this,"A recipe with this name already exists",Toast.LENGTH_SHORT).show();
+                    Toast.makeText(AddRecipeActivity.this, "A recipe with this name already exists", Toast.LENGTH_SHORT).show();
                 } else {
                     ContentValues contentValues = new ContentValues();
                     contentValues.put("name", name);
@@ -58,11 +91,10 @@ public class AddRecipeActivity extends AppCompatActivity {
                     long result = recipeDatabase.insert("recipes", null, contentValues);
                     if (result != -1) {
                         displayNotification("Recipe added", "Your recipe has been added successfully.");
-                        Toast.makeText(AddRecipeActivity.this,"Recipe Added",Toast.LENGTH_SHORT).show();
-
+                        Toast.makeText(AddRecipeActivity.this, "Recipe Added", Toast.LENGTH_SHORT).show();
                     } else {
                         displayNotification("Error", "Error adding recipe");
-                        Toast.makeText(AddRecipeActivity.this,"Error Adding Recipe",Toast.LENGTH_SHORT);
+                        Toast.makeText(AddRecipeActivity.this, "Error Adding Recipe", Toast.LENGTH_SHORT);
                     }
                 }
             }
@@ -72,7 +104,7 @@ public class AddRecipeActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 // Start RecipeDetailsActivity
-                Intent intent = new Intent(AddRecipeActivity.this,RecipeDetailsActivity.class);
+                Intent intent = new Intent(AddRecipeActivity.this, RecipeDetailsActivity.class);
                 startActivity(intent);
             }
         });

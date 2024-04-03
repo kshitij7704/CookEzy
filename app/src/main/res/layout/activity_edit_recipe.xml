@@ -50,7 +50,7 @@
         android:layout_below="@id/editInstructionsEditText"
         android:layout_alignParentEnd="true"
         android:layout_marginTop="16dp"
-        android:layout_marginEnd="40dp"
+        android:layout_marginEnd="38dp"
         android:text="Update" />
 
     <Button
@@ -61,7 +61,8 @@
         android:layout_marginTop="16dp"
         android:text="Delete"
         android:layout_toStartOf="@id/updateButton"
-        android:layout_marginEnd="106dp"/>
+        android:layout_marginLeft="41dp"
+        android:layout_marginEnd="90dp"/>
 
     <!-- Add Send SMS Button -->
     <Button
@@ -69,8 +70,19 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@id/deleteButton"
-        android:layout_centerHorizontal="true"
+        android:layout_marginLeft="29dp"
         android:layout_marginTop="16dp"
         android:text="Send SMS" />
+    <Button
+        android:id="@+id/resetButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Reset"
+        android:layout_marginLeft="80dp"
+        android:layout_below="@id/updateButton"
+        android:layout_toRightOf="@id/sendSmsButton"
+
+        android:layout_marginTop="16dp"/>
+
 
 </RelativeLayout>
