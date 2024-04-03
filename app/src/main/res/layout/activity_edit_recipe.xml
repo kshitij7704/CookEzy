@@ -3,11 +3,22 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:padding="16dp">
+    <TextView
+        android:id="@+id/textView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="10dp"
+        android:text="EDIT RECIPE"
+        android:textSize="24sp"
+        android:textStyle="bold"/>
 
     <EditText
         android:id="@+id/editRecipeNameEditText"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_below="@id/textView"
+        android:layout_marginTop="90dp"
         android:hint="Recipe Name"
         android:inputType="text" />
 
@@ -29,7 +40,8 @@
         android:layout_marginTop="16dp"
         android:hint="Instructions"
         android:inputType="textMultiLine"
-        android:minLines="3" />
+        android:minLines="3"
+        android:layout_marginBottom="30dp"/>
 
     <Button
         android:id="@+id/updateButton"
@@ -38,6 +50,7 @@
         android:layout_below="@id/editInstructionsEditText"
         android:layout_alignParentEnd="true"
         android:layout_marginTop="16dp"
+        android:layout_marginEnd="40dp"
         android:text="Update" />
 
     <Button
@@ -48,7 +61,7 @@
         android:layout_marginTop="16dp"
         android:text="Delete"
         android:layout_toStartOf="@id/updateButton"
-        android:layout_marginEnd="16dp"/>
+        android:layout_marginEnd="106dp"/>
 
     <!-- Add Send SMS Button -->
     <Button
