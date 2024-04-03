@@ -11,6 +11,8 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Toast;
+
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.NotificationCompat;
 
@@ -45,7 +47,8 @@ public class AddRecipeActivity extends AppCompatActivity {
                 Cursor cursor = recipeDatabase.rawQuery("SELECT * FROM recipes WHERE name=?", new String[]{name});
                 if (cursor.getCount() > 0) {
                     cursor.close();
-                    displayNotification("Recipe already exists", "A recipe with this name already exists.");
+                    displayNotification("Recipe already exists", "A recipe with this name already exists");
+                    Toast.makeText(AddRecipeActivity.this,"A recipe with this name already exists",Toast.LENGTH_SHORT).show();
                 } else {
                     ContentValues contentValues = new ContentValues();
                     contentValues.put("name", name);
@@ -55,8 +58,11 @@ public class AddRecipeActivity extends AppCompatActivity {
                     long result = recipeDatabase.insert("recipes", null, contentValues);
                     if (result != -1) {
                         displayNotification("Recipe added", "Your recipe has been added successfully.");
+                        Toast.makeText(AddRecipeActivity.this,"Recipe Added",Toast.LENGTH_SHORT).show();
+
                     } else {
                         displayNotification("Error", "Error adding recipe");
+                        Toast.makeText(AddRecipeActivity.this,"Error Adding Recipe",Toast.LENGTH_SHORT);
                     }
                 }
             }

@@ -111,6 +111,7 @@ public class EditRecipeActivity extends AppCompatActivity {
         try {
             recipeDatabase.execSQL(sql);
             displayNotification("Recipe Updated", "Recipe has been updated successfully.");
+            Toast.makeText(EditRecipeActivity.this,"Recipe Updated",Toast.LENGTH_SHORT).show();
             Intent resultIntent = new Intent();
             resultIntent.putExtra("recipeUpdated", true);
             setResult(RESULT_OK, resultIntent);
@@ -126,6 +127,7 @@ public class EditRecipeActivity extends AppCompatActivity {
         try {
             recipeDatabase.execSQL(sql);
             displayNotification("Recipe Deleted", "Recipe has been deleted successfully.");
+            Toast.makeText(EditRecipeActivity.this,"Recipe Deleted",Toast.LENGTH_SHORT).show();
             Intent resultIntent = new Intent();
             resultIntent.putExtra("recipeDeleted", true);
             setResult(RESULT_OK, resultIntent);
@@ -177,7 +179,7 @@ public class EditRecipeActivity extends AppCompatActivity {
         String recipeName = recipeNameEditText.getText().toString();
         String ingredients = ingredientsEditText.getText().toString();
         String instructions = instructionsEditText.getText().toString();
-        String message = "Recipe: " + recipeName + "\nIngredients: " + ingredients + "\nInstructions: " + instructions;
+        String message ="Recipe Details are as follows:\n"+ "Recipe: " + recipeName + "\nIngredients: " + ingredients + "\nInstructions: " + instructions;
 
         try {
             SmsManager smsManager = SmsManager.getDefault();

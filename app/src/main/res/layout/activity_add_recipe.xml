@@ -44,10 +44,10 @@
         android:layout_width="121dp"
         android:layout_height="wrap_content"
         android:layout_below="@id/instructionsEditText"
-        android:layout_alignParentEnd="true"
-        android:layout_marginStart="132dp"
+        
+
         android:layout_marginTop="32dp"
-        android:layout_marginEnd="125dp"
+        android:layout_centerHorizontal="true"
         android:text="Save" />
 
     <Button
@@ -55,8 +55,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@id/saveButton"
-        android:layout_alignParentStart="true"
-        android:layout_marginStart="129dp"
+
+        android:layout_centerHorizontal="true"
         android:layout_marginTop="20dp"
         android:text="View Recipe" />
 
